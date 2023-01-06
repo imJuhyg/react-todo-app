@@ -5,16 +5,7 @@ export default class App extends Component {
 
   state = {
     todoData : [ // JSON 형식처럼
-      {
-        id : "1",
-        title : "공부하기",
-        completed : true
-      },
-      {
-        id : "2",
-        title : "청소하기",
-        completed : false
-      }
+      
     ],
     value : ""
   };
@@ -28,11 +19,11 @@ export default class App extends Component {
     float: "right"
   }
   
-  getStyle = () => { // 스타일 함수(동적으로 사용 가능)
+  getStyle = (isCompleted) => { // 스타일 함수(동적으로 사용 가능)
     return {
       padding: "10px",
       borderBottom: "1px #ccc dotted",
-      textDecoration: "none"
+      textDecoration: isCompleted ? 'line-through' : 'none'
     }
   }
 
@@ -63,6 +54,16 @@ export default class App extends Component {
     this.setState({ value : ""} );
   };
 
+  handleCompleteChange = (id) => {
+    let newTodoData = this.state.todoData.map((data) => {
+      if(data.id === id) {
+        data.completed = !data.completed;
+      }
+      return data;
+    })
+    this.setState({ todoData : newTodoData });
+  }
+
   render() { // render(): Component의 함수
     return(
       <div className="container">
@@ -72,8 +73,8 @@ export default class App extends Component {
           </div>
 
           {this.state.todoData.map((data) => (
-            <div style={this.getStyle()} key={data.id}>
-            <input type="checkbox" defaultChecked={false} />
+            <div style={this.getStyle(data.completed)} key={data.id}>
+            <input type="checkbox" defaultChecked={false} onChange={ () => this.handleCompleteChange(data.id) } />
               {data.title}
             <button style={this.btnStyle} onClick={() => this.handleClick(data.id)}>x</button>
           </div>
