@@ -1,1 +1,1 @@
-# react_todo_app
+# react-todo-app
