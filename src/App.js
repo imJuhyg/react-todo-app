@@ -1,105 +1,81 @@
-import React, {Component} from "react"; // "react"라이브러리에서 React와 Component 클래스를 가져온다.
+// import React, {Component} from "react"; // "react"라이브러리에서 React와 Component 클래스를 가져온다.
+import React, { useState } from 'react';
 import "./App.css";
+import List from './components/List';
 
-export default class App extends Component {
-
-  state = {
-    todoData : [ // JSON 형식처럼
-      
-    ],
-    value : ""
-  };
-
-  btnStyle = { // 스타일(정적으로 지정하여 사용 가능)
-    color: "#fff",
-    border: "none",
-    padding: "5px 9px",
-    borderRadius: "50%",
-    cursor: "pointer",
-    float: "right"
-  }
-  
-  getStyle = (isCompleted) => { // 스타일 함수(동적으로 사용 가능)
-    return {
-      padding: "10px",
-      borderBottom: "1px #ccc dotted",
-      textDecoration: isCompleted ? 'line-through' : 'none'
+export default function App() {
+  // state = {
+  //   todoData : [],
+  //   value : ""
+  // };
+  const [todoData, setTodoData] = useState([
+    {
+      id: "1",
+      title: "공부하기",
+      completed: true
+    },
+    {
+      id: "2",
+      title: "청소하기",
+      completed: false
     }
-  }
+  ]); // todoData state 정의
+  const [value, setValue] = useState(""); // value state 정의
 
-  handleClick = (id) => {
-    // 삭제버튼 누른 요소를 제외한 나머지 제외
-    let newTodoData = this.state.todoData.filter(data => data.id !== id)
-
-    this.setState({todoData : newTodoData}); // 데이터 변경
+  const handleChange = (e) => {
+    // this.setState({ value : e.target.value });
+    setValue(e.target.value);
   };
 
-  handleChange = (e) => {
-    this.setState({ value : e.target.value });
-  };
-
-  handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault(); // 원래 submit은 페이지가 리로드된다. 이 것을 막아준다.
 
     // 새로운 할 일 데이터
     let newTodo = {
       id: Date.now(),
-      title: this.state.value,
+      // title: this.state.value,
+      title: value,
       completed: false
     };
 
     // todoData에 새로운 할 일 추가하기
-    this.setState({ todoData: [...this.state.todoData, newTodo] });
+    // this.setState({ todoData: [...todoData, newTodo] });
+    setTodoData(prev => [...prev, newTodo]); // setter에서 이전 state를 가져오기 위해서는 인수에 함수를 이용해서 가져올 수 있다.
     // input에 있던 value 삭제
-    this.setState({ value : ""} );
+    // this.setState({ value : ""} );
+    setValue("");
   };
 
-  handleCompleteChange = (id) => {
-    let newTodoData = this.state.todoData.map((data) => {
-      if(data.id === id) {
-        data.completed = !data.completed;
-      }
-      return data;
-    })
-    this.setState({ todoData : newTodoData });
-  }
-
-  render() { // render(): Component의 함수
-    return(
-      <div className="container">
-        <div className="todoBlock">
-          <div class="title">
-            <h1>할 일 목록</h1>
-          </div>
-
-          {this.state.todoData.map((data) => (
-            <div style={this.getStyle(data.completed)} key={data.id}>
-            <input type="checkbox" defaultChecked={false} onChange={ () => this.handleCompleteChange(data.id) } />
-              {data.title}
-            <button style={this.btnStyle} onClick={() => this.handleClick(data.id)}>x</button>
-          </div>
-          ))}
-          
-          <form style={{display: 'flex'}} onSubmit={ this.handleSubmit }>
-            <input 
-              type="text" 
-              name="value" 
-              style={{ flex : '10', padding : '5px' }} 
-              placeholder="해야할 일 을 입력하세요."
-              value={ this.state.value }
-              onChange={this.handleChange}
-            />
-
-            <input
-              type="submit"
-              value="입력"
-              className="btn"
-              style={{ flex : '1' }}
-            />
-          </form>
-
+  // functional component는 render()가 필요없음
+  // 함수를 정의할 때 const를 붙여주고 사용하는 부분에서 this. 을 더이상 붙일 필요 없음
+  return (
+    <div className="container">
+      <div className="todoBlock">
+        <div class="title">
+          <h1>할 일 목록</h1>
         </div>
+
+        <List todoData={ todoData } setTodoData={ setTodoData }/>
+
+        <form style={{ display: 'flex' }} onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="value"
+            style={{ flex: '10', padding: '5px' }}
+            placeholder="해야할 일 을 입력하세요."
+            value={value}
+            onChange={handleChange}
+          />
+
+          <input
+            type="submit"
+            value="입력"
+            className="btn"
+            style={{ flex: '1' }}
+          />
+        </form>
+
       </div>
-    );
-  }
+    </div>
+  );
 }
