@@ -33,7 +33,7 @@ export default function App() {
     <div className="container">
       <div className="todoBlock">
         <div class="title">
-          <h1 className="text-3xl font-bold">할 일 목록</h1>
+          <h1 className="text-3xl font-bold">할 일 목록</h1> 
         </div>
         <h1 className="text-3xl font-bold underline">Hello World!</h1> 
         <List todoData={todoData} setTodoData={setTodoData} />
